@@ -1,3 +1,4 @@
+use file_vec::{FileVec, FileVecUtil};
 use {
     crate::{
         noir_to_r1cs,
@@ -164,19 +165,29 @@ impl NoirProofScheme {
 
 /// Complete a partial witness with random values.
 #[instrument(skip_all, fields(size = witness.len()))]
-fn fill_witness(witness: Vec<Option<FieldElement>>) -> Result<Vec<FieldElement>> {
+fn fill_witness(witness: FileVec<Option<FieldElement>>) -> Result<FileVec<FieldElement>> {
     // TODO: Use better entropy source and proper sampling.
     let mut rng = rng();
     let mut count = 0;
-    let witness = witness
-        .iter()
-        .map(|f| {
-            f.unwrap_or_else(|| {
-                count += 1;
-                FieldElement::from(rng.random::<u128>())
+    // let witness = witness
+    //     .iter()
+    //     .map(|f| {
+    //         f.unwrap_or_else(|| {
+    //             count += 1;
+    //             FieldElement::from(rng.random::<u128>())
+    //         })
+    //     })
+    //     .collect::<Vec<_>>();
+    let witness = FileVecUtil::collect_with_capacity(
+        witness.len(),
+        witness.iter()
+            .map(|f| {
+                f.unwrap_or_else(|| {
+                    count += 1;
+                    FieldElement::from(rng.random::<u128>())
+                })
             })
-        })
-        .collect::<Vec<_>>();
+    );
     info!("Filled witness with {count} random values");
     Ok(witness)
 }
