@@ -1,3 +1,5 @@
+#![feature(allocator_api)]
+#![feature(alloc_layout_extra)]
 #![doc = include_str!("../README.md")]
 #![allow(missing_docs)]
 mod binops;
