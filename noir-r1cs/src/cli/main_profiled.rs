@@ -1,6 +1,7 @@
 #![allow(missing_docs)]
 mod cmd;
 mod measuring_alloc;
+mod custom_global_alloc;
 mod span_stats;
 
 use {
@@ -11,12 +12,18 @@ use {
     tracing::subscriber,
     tracing_subscriber::{self, layer::SubscriberExt as _, Layer, Registry},
 };
+use crate::custom_global_alloc::CustomGlobalAllocator;
 
 static ALLOC_STATE: MeasuringAllocatorState = MeasuringAllocatorState::new();
 
 #[global_allocator]
-static ALLOC_TRACY: tracy_client::ProfiledAllocator<MeasuringAllocator> =
-    tracy_client::ProfiledAllocator::new(MeasuringAllocator::new(&ALLOC_STATE), 100);
+static ALLOC_TRACY: tracy_client::ProfiledAllocator<CustomGlobalAllocator> =
+    tracy_client::ProfiledAllocator::new(
+        CustomGlobalAllocator::new(
+            MeasuringAllocator::new(&ALLOC_STATE),
+        ),
+        100,
+    );
 
 fn main() -> Result<()> {
     let subscriber = Registry::default()

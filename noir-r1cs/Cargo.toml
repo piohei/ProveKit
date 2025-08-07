@@ -38,6 +38,8 @@ tracing-tracy = { workspace = true, features = ["default", "manual-lifetime"] }
 tracy-client = { workspace = true, features = ["default", "manual-lifetime"] }
 tracy-client-sys = { workspace = true, features = ["default", "manual-lifetime"] }
 zerocopy.workspace = true
+memmap2.workspace = true
+tempfile.workspace = true
 
 # Ark
 rand08.workspace = true

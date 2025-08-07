@@ -127,7 +127,7 @@ impl WhirR1CSScheme {
 
         let committer = CommitmentWriter::new(self.whir_config.clone());
         let witness_new = committer
-            .commit_batch(merlin, vec![
+            .commit_batch(merlin, &[
                 masked_polynomial_coeff,
                 random_polynomial_coeff,
             ])
